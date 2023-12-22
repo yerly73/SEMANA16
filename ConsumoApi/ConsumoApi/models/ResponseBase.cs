@@ -4,18 +4,37 @@ using System.Text;
 
 namespace ConsumoApi.models
 {
-    public class ResponseBase
+    public class RandomUserResponse
     {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string status { get; set; }
-        public string species { get; set; }
-        public string type { get; set; }
+        public List<User> results { get; set; }
+        // Otros campos como info, etc.
+    }
+
+    public class User
+    {
         public string gender { get; set; }
-        public string origin { get; set; }
-        public string location { get; set; }
-        public string image { get; set; }
-        public string episode { get; set; }
-        public string url { get; set; }
+        public Name name { get; set; }
+        public Location location { get; set; }
+        // Otros campos relevantes...
+    }
+
+    public class Name
+    {
+        public string title { get; set; }
+        public string first { get; set; }
+        public string last { get; set; }
+    }
+
+    public class Location
+    {
+        public string city { get; set; }
+        public string state { get; set; }
+        // Otros campos relevantes...
+    }
+    public class Picture
+    {
+        public string large { get; set; }
+        public string medium { get; set; }
+        public string thumbnail { get; set; }
     }
 }

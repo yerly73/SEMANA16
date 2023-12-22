@@ -15,35 +15,28 @@ namespace ConsumoApi
 {
     public partial class MainPage : ContentPage
     {
+        private const string BaseUrl = "https://randomuser.me/api/";
+
         public MainPage()
         {
             InitializeComponent();
-
         }
-
-        private const string BaseUrl = "https://rickandmortyapi.com";
 
         public async Task<T> GetAsync<T>(string endpoint)
         {
-
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri(BaseUrl);
 
-                // Realizar la solicitud GET al servidor
                 HttpResponseMessage response = await client.GetAsync(endpoint);
-
-                // Verificar si la solicitud fue exitosa (código de estado 200)
                 if (response.IsSuccessStatusCode)
                 {
-                    // Leer y deserializar la respuesta JSON
                     string json = await response.Content.ReadAsStringAsync();
                     T result = JsonConvert.DeserializeObject<T>(json);
                     return result;
                 }
                 else
                 {
-                    // Manejar errores
                     throw new Exception($"Error en la solicitud: {response.StatusCode}");
                 }
             }
@@ -51,34 +44,22 @@ namespace ConsumoApi
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-
-
             try
             {
-                //ResponseBase results = await GetAsync<ResponseBase>("https://rickandmortyapi.com/api/character");
-                // Procesar el resultado
+                models.RandomUserResponse response = await GetAsync<models.RandomUserResponse>("?results=5"); // Ajusta el número de resultados según sea necesario
 
-                List<ResponseBase> results = await GetAsync<List<ResponseBase>>("https://rickandmortyapi.com/api/character");
-
-                var animeList = results.Select(anime => new
+                var personList = response.results.Select(person => new
                 {
-                    Id = anime.id,
-                    Status = anime.status,
-                    Species = anime.species,
-                    Image = anime.image,
-                    Episode = anime.episode
+                    Name = $"{person.name.first} {person.name.last}",
+                    Location = $"{person.location.city}, {person.location.state}"
                 }).ToList();
 
-                //ListViewDemo.ItemsSource = gameList;
-                CollectionViewDemo.ItemsSource = animeList;
-
-
-
+                CollectionViewDemo.ItemsSource = personList;
             }
             catch (Exception ex)
             {
-                throw ex;
-                // Manejar errores
+                Console.WriteLine($"Error: {ex.Message}");
+                // Considera mostrar un mensaje al usuario aquí
             }
         }
     }
